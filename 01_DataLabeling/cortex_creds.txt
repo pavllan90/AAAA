@@ -1,0 +1,2 @@
+client_id X
+client_secret X
