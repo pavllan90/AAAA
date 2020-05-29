@@ -1,0 +1,507 @@
+
+Feedback.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000002c4  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  00000338  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .bss          00000018  00800060  00800060  00000338  2**0
+                  ALLOC
+  3 .comment      00000030  00000000  00000000  00000338  2**0
+                  CONTENTS, READONLY
+  4 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000368  2**2
+                  CONTENTS, READONLY
+  5 .debug_aranges 00000048  00000000  00000000  000003a4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_info   000006cf  00000000  00000000  000003ec  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_abbrev 0000050c  00000000  00000000  00000abb  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_line   000003f9  00000000  00000000  00000fc7  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_frame  00000094  00000000  00000000  000013c0  2**2
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_str    00000354  00000000  00000000  00001454  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_loc    00000063  00000000  00000000  000017a8  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 12 .debug_ranges 00000038  00000000  00000000  0000180b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	21 c0       	rjmp	.+66     	; 0x46 <__bad_interrupt>
+   4:	20 c0       	rjmp	.+64     	; 0x46 <__bad_interrupt>
+   6:	1f c0       	rjmp	.+62     	; 0x46 <__bad_interrupt>
+   8:	1e c0       	rjmp	.+60     	; 0x46 <__bad_interrupt>
+   a:	1d c0       	rjmp	.+58     	; 0x46 <__bad_interrupt>
+   c:	1c c0       	rjmp	.+56     	; 0x46 <__bad_interrupt>
+   e:	1b c0       	rjmp	.+54     	; 0x46 <__bad_interrupt>
+  10:	1a c0       	rjmp	.+52     	; 0x46 <__bad_interrupt>
+  12:	dc c0       	rjmp	.+440    	; 0x1cc <__vector_9>
+  14:	18 c0       	rjmp	.+48     	; 0x46 <__bad_interrupt>
+  16:	17 c0       	rjmp	.+46     	; 0x46 <__bad_interrupt>
+  18:	16 c0       	rjmp	.+44     	; 0x46 <__bad_interrupt>
+  1a:	15 c0       	rjmp	.+42     	; 0x46 <__bad_interrupt>
+  1c:	14 c0       	rjmp	.+40     	; 0x46 <__bad_interrupt>
+  1e:	13 c0       	rjmp	.+38     	; 0x46 <__bad_interrupt>
+  20:	12 c0       	rjmp	.+36     	; 0x46 <__bad_interrupt>
+  22:	11 c0       	rjmp	.+34     	; 0x46 <__bad_interrupt>
+  24:	10 c0       	rjmp	.+32     	; 0x46 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf e5       	ldi	r28, 0x5F	; 95
+  2c:	d4 e0       	ldi	r29, 0x04	; 4
+  2e:	de bf       	out	0x3e, r29	; 62
+  30:	cd bf       	out	0x3d, r28	; 61
+
+00000032 <__do_clear_bss>:
+  32:	20 e0       	ldi	r18, 0x00	; 0
+  34:	a0 e6       	ldi	r26, 0x60	; 96
+  36:	b0 e0       	ldi	r27, 0x00	; 0
+  38:	01 c0       	rjmp	.+2      	; 0x3c <.do_clear_bss_start>
+
+0000003a <.do_clear_bss_loop>:
+  3a:	1d 92       	st	X+, r1
+
+0000003c <.do_clear_bss_start>:
+  3c:	a8 37       	cpi	r26, 0x78	; 120
+  3e:	b2 07       	cpc	r27, r18
+  40:	e1 f7       	brne	.-8      	; 0x3a <.do_clear_bss_loop>
+  42:	1f d0       	rcall	.+62     	; 0x82 <main>
+  44:	3d c1       	rjmp	.+634    	; 0x2c0 <_exit>
+
+00000046 <__bad_interrupt>:
+  46:	dc cf       	rjmp	.-72     	; 0x0 <__vectors>
+
+00000048 <port_init>:
+unsigned int motor1, motor2, motor3, motor4, motor5;
+unsigned int motor1_b, motor2_b, motor3_b, motor4_b, motor5_b;
+
+void port_init(void)
+{
+	DDRD=0xFF;
+  48:	8f ef       	ldi	r24, 0xFF	; 255
+  4a:	81 bb       	out	0x11, r24	; 17
+	PORTD=0x00;
+  4c:	12 ba       	out	0x12, r1	; 18
+  4e:	08 95       	ret
+
+00000050 <ADC_init>:
+}
+
+void ADC_init(void)
+{
+	ADCSRA |= (1<<ADEN)						//Разрешение использования АЦП
+  50:	86 b1       	in	r24, 0x06	; 6
+  52:	87 68       	ori	r24, 0x87	; 135
+  54:	86 b9       	out	0x06, r24	; 6
+	|(1<<ADPS2)|(1<<ADPS1)|(1<<ADPS0);		//Делитель 128 = 64 кГц
+	ADMUX |= (0<<REFS1)|(1<<REFS0);			//Внешний источник напряжения
+  56:	3e 9a       	sbi	0x07, 6	; 7
+  58:	08 95       	ret
+
+0000005a <ADC_convert>:
+}
+
+unsigned int ADC_convert(void)
+{
+	ADCSRA |= (1<<ADSC);					//Начинаем преобразование
+  5a:	36 9a       	sbi	0x06, 6	; 6
+	while((ADCSRA & (1<<ADSC)));			//Проверим закончилось ли аналого-цифровое преобразование
+  5c:	36 99       	sbic	0x06, 6	; 6
+  5e:	fe cf       	rjmp	.-4      	; 0x5c <ADC_convert+0x2>
+	return (unsigned int) ADC;
+  60:	84 b1       	in	r24, 0x04	; 4
+  62:	95 b1       	in	r25, 0x05	; 5
+}
+  64:	08 95       	ret
+
+00000066 <Timer_init>:
+
+void Timer_init(void)
+{
+	TCCR1A |= (0<<WGM11)|(1<<WGM10);		//Выбор режима работы таймера
+  66:	8f b5       	in	r24, 0x2f	; 47
+  68:	81 60       	ori	r24, 0x01	; 1
+  6a:	8f bd       	out	0x2f, r24	; 47
+	TCCR1B |= (0<<WGM13)|(1<<WGM12);		//Выбор режима работы таймера
+  6c:	8e b5       	in	r24, 0x2e	; 46
+  6e:	88 60       	ori	r24, 0x08	; 8
+  70:	8e bd       	out	0x2e, r24	; 46
+	TCCR0 |= (1<<CS00);						//Включение таймера
+  72:	83 b7       	in	r24, 0x33	; 51
+  74:	81 60       	ori	r24, 0x01	; 1
+  76:	83 bf       	out	0x33, r24	; 51
+	TCNT0 = 0x00;							//Инициализация счетчика таймера
+  78:	12 be       	out	0x32, r1	; 50
+	
+	TIMSK = 0x01;							//Включить прерывание по переполнению таймера
+  7a:	81 e0       	ldi	r24, 0x01	; 1
+  7c:	89 bf       	out	0x39, r24	; 57
+	sei();									//Глобальное разрешение прерываний
+  7e:	78 94       	sei
+  80:	08 95       	ret
+
+00000082 <main>:
+}
+
+int main(void)
+{
+	port_init();							//Инициализируем порты
+  82:	e2 df       	rcall	.-60     	; 0x48 <port_init>
+	ADC_init();								//Инициализируем АЦП
+  84:	e5 df       	rcall	.-54     	; 0x50 <ADC_init>
+	Timer_init();							//Инициализация таймера
+  86:	ef df       	rcall	.-34     	; 0x66 <Timer_init>
+	{
+		if (port == 5) {
+			port = 0;
+		}
+		switch (port) {
+			case 0: ADMUX = 0b01000000;		//Выбор входного канала
+  88:	68 94       	set
+  8a:	dd 24       	eor	r13, r13
+  8c:	d6 f8       	bld	r13, 6
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor1 = adc_value / 4;
+			if (motor1 == 256) motor1--;
+  8e:	cf ef       	ldi	r28, 0xFF	; 255
+  90:	d0 e0       	ldi	r29, 0x00	; 0
+			case 1: ADMUX = 0b01000001;		//Выбор входного канала
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor2 = adc_value / 4;
+			if (motor2 == 256) motor2--;
+			break;
+			case 2: ADMUX = 0b01000010;		//Выбор входного канала
+  92:	0f 2e       	mov	r0, r31
+  94:	f2 e4       	ldi	r31, 0x42	; 66
+  96:	ef 2e       	mov	r14, r31
+  98:	f0 2d       	mov	r31, r0
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor3 = adc_value / 4;
+			if (motor3 == 256) motor3--;
+			break;
+			case 3: ADMUX = 0b01000011;		//Выбор входного канала
+  9a:	0f 2e       	mov	r0, r31
+  9c:	f3 e4       	ldi	r31, 0x43	; 67
+  9e:	ff 2e       	mov	r15, r31
+  a0:	f0 2d       	mov	r31, r0
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor4 = adc_value / 4;
+			if (motor4 == 256) motor4--;
+			break;
+			case 4: ADMUX = 0b01000100;		//Выбор входного канала
+  a2:	04 e4       	ldi	r16, 0x44	; 68
+			case 0: ADMUX = 0b01000000;		//Выбор входного канала
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor1 = adc_value / 4;
+			if (motor1 == 256) motor1--;
+			break;
+			case 1: ADMUX = 0b01000001;		//Выбор входного канала
+  a4:	11 e4       	ldi	r17, 0x41	; 65
+	ADC_init();								//Инициализируем АЦП
+	Timer_init();							//Инициализация таймера
+	
+	while(1)
+	{
+		if (port == 5) {
+  a6:	80 91 61 00 	lds	r24, 0x0061	; 0x800061 <port>
+  aa:	85 30       	cpi	r24, 0x05	; 5
+  ac:	19 f4       	brne	.+6      	; 0xb4 <main+0x32>
+			port = 0;
+  ae:	10 92 61 00 	sts	0x0061, r1	; 0x800061 <port>
+  b2:	0f c0       	rjmp	.+30     	; 0xd2 <main+0x50>
+		}
+		switch (port) {
+  b4:	82 30       	cpi	r24, 0x02	; 2
+  b6:	e9 f1       	breq	.+122    	; 0x132 <main+0xb0>
+  b8:	28 f4       	brcc	.+10     	; 0xc4 <main+0x42>
+  ba:	88 23       	and	r24, r24
+  bc:	51 f0       	breq	.+20     	; 0xd2 <main+0x50>
+  be:	81 30       	cpi	r24, 0x01	; 1
+  c0:	01 f1       	breq	.+64     	; 0x102 <main+0x80>
+  c2:	7e c0       	rjmp	.+252    	; 0x1c0 <main+0x13e>
+  c4:	83 30       	cpi	r24, 0x03	; 3
+  c6:	09 f4       	brne	.+2      	; 0xca <main+0x48>
+  c8:	4c c0       	rjmp	.+152    	; 0x162 <main+0xe0>
+  ca:	84 30       	cpi	r24, 0x04	; 4
+  cc:	09 f4       	brne	.+2      	; 0xd0 <main+0x4e>
+  ce:	61 c0       	rjmp	.+194    	; 0x192 <main+0x110>
+  d0:	77 c0       	rjmp	.+238    	; 0x1c0 <main+0x13e>
+			case 0: ADMUX = 0b01000000;		//Выбор входного канала
+  d2:	d7 b8       	out	0x07, r13	; 7
+			adc_value = ADC_convert();		//Вызов преобразования
+  d4:	c2 df       	rcall	.-124    	; 0x5a <ADC_convert>
+  d6:	90 93 6b 00 	sts	0x006B, r25	; 0x80006b <adc_value+0x1>
+  da:	80 93 6a 00 	sts	0x006A, r24	; 0x80006a <adc_value>
+			motor1 = adc_value / 4;
+  de:	96 95       	lsr	r25
+  e0:	87 95       	ror	r24
+  e2:	96 95       	lsr	r25
+  e4:	87 95       	ror	r24
+			if (motor1 == 256) motor1--;
+  e6:	81 15       	cp	r24, r1
+  e8:	21 e0       	ldi	r18, 0x01	; 1
+  ea:	92 07       	cpc	r25, r18
+  ec:	29 f0       	breq	.+10     	; 0xf8 <main+0x76>
+			port = 0;
+		}
+		switch (port) {
+			case 0: ADMUX = 0b01000000;		//Выбор входного канала
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor1 = adc_value / 4;
+  ee:	90 93 6f 00 	sts	0x006F, r25	; 0x80006f <motor1+0x1>
+  f2:	80 93 6e 00 	sts	0x006E, r24	; 0x80006e <motor1>
+  f6:	64 c0       	rjmp	.+200    	; 0x1c0 <main+0x13e>
+			if (motor1 == 256) motor1--;
+  f8:	d0 93 6f 00 	sts	0x006F, r29	; 0x80006f <motor1+0x1>
+  fc:	c0 93 6e 00 	sts	0x006E, r28	; 0x80006e <motor1>
+ 100:	5f c0       	rjmp	.+190    	; 0x1c0 <main+0x13e>
+			break;
+			case 1: ADMUX = 0b01000001;		//Выбор входного канала
+ 102:	17 b9       	out	0x07, r17	; 7
+			adc_value = ADC_convert();		//Вызов преобразования
+ 104:	aa df       	rcall	.-172    	; 0x5a <ADC_convert>
+ 106:	90 93 6b 00 	sts	0x006B, r25	; 0x80006b <adc_value+0x1>
+ 10a:	80 93 6a 00 	sts	0x006A, r24	; 0x80006a <adc_value>
+			motor2 = adc_value / 4;
+ 10e:	96 95       	lsr	r25
+ 110:	87 95       	ror	r24
+ 112:	96 95       	lsr	r25
+ 114:	87 95       	ror	r24
+			if (motor2 == 256) motor2--;
+ 116:	81 15       	cp	r24, r1
+ 118:	21 e0       	ldi	r18, 0x01	; 1
+ 11a:	92 07       	cpc	r25, r18
+ 11c:	29 f0       	breq	.+10     	; 0x128 <main+0xa6>
+			motor1 = adc_value / 4;
+			if (motor1 == 256) motor1--;
+			break;
+			case 1: ADMUX = 0b01000001;		//Выбор входного канала
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor2 = adc_value / 4;
+ 11e:	90 93 65 00 	sts	0x0065, r25	; 0x800065 <motor2+0x1>
+ 122:	80 93 64 00 	sts	0x0064, r24	; 0x800064 <motor2>
+ 126:	4c c0       	rjmp	.+152    	; 0x1c0 <main+0x13e>
+			if (motor2 == 256) motor2--;
+ 128:	d0 93 65 00 	sts	0x0065, r29	; 0x800065 <motor2+0x1>
+ 12c:	c0 93 64 00 	sts	0x0064, r28	; 0x800064 <motor2>
+ 130:	47 c0       	rjmp	.+142    	; 0x1c0 <main+0x13e>
+			break;
+			case 2: ADMUX = 0b01000010;		//Выбор входного канала
+ 132:	e7 b8       	out	0x07, r14	; 7
+			adc_value = ADC_convert();		//Вызов преобразования
+ 134:	92 df       	rcall	.-220    	; 0x5a <ADC_convert>
+ 136:	90 93 6b 00 	sts	0x006B, r25	; 0x80006b <adc_value+0x1>
+ 13a:	80 93 6a 00 	sts	0x006A, r24	; 0x80006a <adc_value>
+			motor3 = adc_value / 4;
+ 13e:	96 95       	lsr	r25
+ 140:	87 95       	ror	r24
+ 142:	96 95       	lsr	r25
+ 144:	87 95       	ror	r24
+			if (motor3 == 256) motor3--;
+ 146:	81 15       	cp	r24, r1
+ 148:	21 e0       	ldi	r18, 0x01	; 1
+ 14a:	92 07       	cpc	r25, r18
+ 14c:	29 f0       	breq	.+10     	; 0x158 <main+0xd6>
+			motor2 = adc_value / 4;
+			if (motor2 == 256) motor2--;
+			break;
+			case 2: ADMUX = 0b01000010;		//Выбор входного канала
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor3 = adc_value / 4;
+ 14e:	90 93 75 00 	sts	0x0075, r25	; 0x800075 <motor3+0x1>
+ 152:	80 93 74 00 	sts	0x0074, r24	; 0x800074 <motor3>
+ 156:	34 c0       	rjmp	.+104    	; 0x1c0 <main+0x13e>
+			if (motor3 == 256) motor3--;
+ 158:	d0 93 75 00 	sts	0x0075, r29	; 0x800075 <motor3+0x1>
+ 15c:	c0 93 74 00 	sts	0x0074, r28	; 0x800074 <motor3>
+ 160:	2f c0       	rjmp	.+94     	; 0x1c0 <main+0x13e>
+			break;
+			case 3: ADMUX = 0b01000011;		//Выбор входного канала
+ 162:	f7 b8       	out	0x07, r15	; 7
+			adc_value = ADC_convert();		//Вызов преобразования
+ 164:	7a df       	rcall	.-268    	; 0x5a <ADC_convert>
+ 166:	90 93 6b 00 	sts	0x006B, r25	; 0x80006b <adc_value+0x1>
+ 16a:	80 93 6a 00 	sts	0x006A, r24	; 0x80006a <adc_value>
+			motor4 = adc_value / 4;
+ 16e:	96 95       	lsr	r25
+ 170:	87 95       	ror	r24
+ 172:	96 95       	lsr	r25
+ 174:	87 95       	ror	r24
+			if (motor4 == 256) motor4--;
+ 176:	81 15       	cp	r24, r1
+ 178:	21 e0       	ldi	r18, 0x01	; 1
+ 17a:	92 07       	cpc	r25, r18
+ 17c:	29 f0       	breq	.+10     	; 0x188 <main+0x106>
+			motor3 = adc_value / 4;
+			if (motor3 == 256) motor3--;
+			break;
+			case 3: ADMUX = 0b01000011;		//Выбор входного канала
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor4 = adc_value / 4;
+ 17e:	90 93 6d 00 	sts	0x006D, r25	; 0x80006d <motor4+0x1>
+ 182:	80 93 6c 00 	sts	0x006C, r24	; 0x80006c <motor4>
+ 186:	1c c0       	rjmp	.+56     	; 0x1c0 <main+0x13e>
+			if (motor4 == 256) motor4--;
+ 188:	d0 93 6d 00 	sts	0x006D, r29	; 0x80006d <motor4+0x1>
+ 18c:	c0 93 6c 00 	sts	0x006C, r28	; 0x80006c <motor4>
+ 190:	17 c0       	rjmp	.+46     	; 0x1c0 <main+0x13e>
+			break;
+			case 4: ADMUX = 0b01000100;		//Выбор входного канала
+ 192:	07 b9       	out	0x07, r16	; 7
+			adc_value = ADC_convert();		//Вызов преобразования
+ 194:	62 df       	rcall	.-316    	; 0x5a <ADC_convert>
+ 196:	90 93 6b 00 	sts	0x006B, r25	; 0x80006b <adc_value+0x1>
+ 19a:	80 93 6a 00 	sts	0x006A, r24	; 0x80006a <adc_value>
+			motor5 = adc_value / 4;
+ 19e:	96 95       	lsr	r25
+ 1a0:	87 95       	ror	r24
+ 1a2:	96 95       	lsr	r25
+ 1a4:	87 95       	ror	r24
+			if (motor5 == 256) motor5--;
+ 1a6:	81 15       	cp	r24, r1
+ 1a8:	21 e0       	ldi	r18, 0x01	; 1
+ 1aa:	92 07       	cpc	r25, r18
+ 1ac:	29 f0       	breq	.+10     	; 0x1b8 <main+0x136>
+			motor4 = adc_value / 4;
+			if (motor4 == 256) motor4--;
+			break;
+			case 4: ADMUX = 0b01000100;		//Выбор входного канала
+			adc_value = ADC_convert();		//Вызов преобразования
+			motor5 = adc_value / 4;
+ 1ae:	90 93 67 00 	sts	0x0067, r25	; 0x800067 <motor5+0x1>
+ 1b2:	80 93 66 00 	sts	0x0066, r24	; 0x800066 <motor5>
+ 1b6:	04 c0       	rjmp	.+8      	; 0x1c0 <main+0x13e>
+			if (motor5 == 256) motor5--;
+ 1b8:	d0 93 67 00 	sts	0x0067, r29	; 0x800067 <motor5+0x1>
+ 1bc:	c0 93 66 00 	sts	0x0066, r28	; 0x800066 <motor5>
+			break;
+		}
+		port++;
+ 1c0:	80 91 61 00 	lds	r24, 0x0061	; 0x800061 <port>
+ 1c4:	8f 5f       	subi	r24, 0xFF	; 255
+ 1c6:	80 93 61 00 	sts	0x0061, r24	; 0x800061 <port>
+	}
+ 1ca:	6d cf       	rjmp	.-294    	; 0xa6 <main+0x24>
+
+000001cc <__vector_9>:
+}
+
+ISR (TIMER0_OVF_vect)						//Обработка прерывания по переполнению таймера
+{
+ 1cc:	1f 92       	push	r1
+ 1ce:	0f 92       	push	r0
+ 1d0:	0f b6       	in	r0, 0x3f	; 63
+ 1d2:	0f 92       	push	r0
+ 1d4:	11 24       	eor	r1, r1
+ 1d6:	2f 93       	push	r18
+ 1d8:	3f 93       	push	r19
+ 1da:	8f 93       	push	r24
+ 1dc:	9f 93       	push	r25
+	counter++;
+ 1de:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 1e2:	8f 5f       	subi	r24, 0xFF	; 255
+ 1e4:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <_edata>
+	if (counter == 0) {						//Счетчик переполнения таймера
+ 1e8:	81 11       	cpse	r24, r1
+ 1ea:	2a c0       	rjmp	.+84     	; 0x240 <__vector_9+0x74>
+		motor1_b = motor1;					//Обновление текущего значения длительности ШИМ
+ 1ec:	80 91 6e 00 	lds	r24, 0x006E	; 0x80006e <motor1>
+ 1f0:	90 91 6f 00 	lds	r25, 0x006F	; 0x80006f <motor1+0x1>
+ 1f4:	90 93 73 00 	sts	0x0073, r25	; 0x800073 <motor1_b+0x1>
+ 1f8:	80 93 72 00 	sts	0x0072, r24	; 0x800072 <motor1_b>
+		motor2_b = motor2;
+ 1fc:	80 91 64 00 	lds	r24, 0x0064	; 0x800064 <motor2>
+ 200:	90 91 65 00 	lds	r25, 0x0065	; 0x800065 <motor2+0x1>
+ 204:	90 93 77 00 	sts	0x0077, r25	; 0x800077 <motor2_b+0x1>
+ 208:	80 93 76 00 	sts	0x0076, r24	; 0x800076 <motor2_b>
+		motor3_b = motor3;
+ 20c:	80 91 74 00 	lds	r24, 0x0074	; 0x800074 <motor3>
+ 210:	90 91 75 00 	lds	r25, 0x0075	; 0x800075 <motor3+0x1>
+ 214:	90 93 71 00 	sts	0x0071, r25	; 0x800071 <motor3_b+0x1>
+ 218:	80 93 70 00 	sts	0x0070, r24	; 0x800070 <motor3_b>
+		motor4_b = motor4;
+ 21c:	80 91 6c 00 	lds	r24, 0x006C	; 0x80006c <motor4>
+ 220:	90 91 6d 00 	lds	r25, 0x006D	; 0x80006d <motor4+0x1>
+ 224:	90 93 69 00 	sts	0x0069, r25	; 0x800069 <motor4_b+0x1>
+ 228:	80 93 68 00 	sts	0x0068, r24	; 0x800068 <motor4_b>
+		motor5_b = motor5;
+ 22c:	80 91 66 00 	lds	r24, 0x0066	; 0x800066 <motor5>
+ 230:	90 91 67 00 	lds	r25, 0x0067	; 0x800067 <motor5+0x1>
+ 234:	90 93 63 00 	sts	0x0063, r25	; 0x800063 <motor5_b+0x1>
+ 238:	80 93 62 00 	sts	0x0062, r24	; 0x800062 <motor5_b>
+		
+		PORTD = 0b00011111;					//Установка 1 на всех выходных каналах
+ 23c:	8f e1       	ldi	r24, 0x1F	; 31
+ 23e:	82 bb       	out	0x12, r24	; 18
+	}
+	
+	if (motor1_b == counter) PORTD &= ~(1<<PD0);	//Установка 0 на каждом выходном канале по достижении заданной длительности ШИМ
+ 240:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 244:	90 e0       	ldi	r25, 0x00	; 0
+ 246:	20 91 72 00 	lds	r18, 0x0072	; 0x800072 <motor1_b>
+ 24a:	30 91 73 00 	lds	r19, 0x0073	; 0x800073 <motor1_b+0x1>
+ 24e:	82 17       	cp	r24, r18
+ 250:	93 07       	cpc	r25, r19
+ 252:	09 f4       	brne	.+2      	; 0x256 <__vector_9+0x8a>
+ 254:	90 98       	cbi	0x12, 0	; 18
+	if (motor2_b == counter) PORTD &= ~(1<<PD1);
+ 256:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 25a:	90 e0       	ldi	r25, 0x00	; 0
+ 25c:	20 91 76 00 	lds	r18, 0x0076	; 0x800076 <motor2_b>
+ 260:	30 91 77 00 	lds	r19, 0x0077	; 0x800077 <motor2_b+0x1>
+ 264:	82 17       	cp	r24, r18
+ 266:	93 07       	cpc	r25, r19
+ 268:	09 f4       	brne	.+2      	; 0x26c <__vector_9+0xa0>
+ 26a:	91 98       	cbi	0x12, 1	; 18
+	if (motor3_b == counter) PORTD &= ~(1<<PD2);
+ 26c:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 270:	90 e0       	ldi	r25, 0x00	; 0
+ 272:	20 91 70 00 	lds	r18, 0x0070	; 0x800070 <motor3_b>
+ 276:	30 91 71 00 	lds	r19, 0x0071	; 0x800071 <motor3_b+0x1>
+ 27a:	82 17       	cp	r24, r18
+ 27c:	93 07       	cpc	r25, r19
+ 27e:	09 f4       	brne	.+2      	; 0x282 <__vector_9+0xb6>
+ 280:	92 98       	cbi	0x12, 2	; 18
+	if (motor4_b == counter) PORTD &= ~(1<<PD3);
+ 282:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 286:	90 e0       	ldi	r25, 0x00	; 0
+ 288:	20 91 68 00 	lds	r18, 0x0068	; 0x800068 <motor4_b>
+ 28c:	30 91 69 00 	lds	r19, 0x0069	; 0x800069 <motor4_b+0x1>
+ 290:	82 17       	cp	r24, r18
+ 292:	93 07       	cpc	r25, r19
+ 294:	09 f4       	brne	.+2      	; 0x298 <__vector_9+0xcc>
+ 296:	93 98       	cbi	0x12, 3	; 18
+	if (motor5_b == counter) PORTD &= ~(1<<PD4);
+ 298:	80 91 60 00 	lds	r24, 0x0060	; 0x800060 <_edata>
+ 29c:	90 e0       	ldi	r25, 0x00	; 0
+ 29e:	20 91 62 00 	lds	r18, 0x0062	; 0x800062 <motor5_b>
+ 2a2:	30 91 63 00 	lds	r19, 0x0063	; 0x800063 <motor5_b+0x1>
+ 2a6:	82 17       	cp	r24, r18
+ 2a8:	93 07       	cpc	r25, r19
+ 2aa:	09 f4       	brne	.+2      	; 0x2ae <__vector_9+0xe2>
+ 2ac:	94 98       	cbi	0x12, 4	; 18
+}
+ 2ae:	9f 91       	pop	r25
+ 2b0:	8f 91       	pop	r24
+ 2b2:	3f 91       	pop	r19
+ 2b4:	2f 91       	pop	r18
+ 2b6:	0f 90       	pop	r0
+ 2b8:	0f be       	out	0x3f, r0	; 63
+ 2ba:	0f 90       	pop	r0
+ 2bc:	1f 90       	pop	r1
+ 2be:	18 95       	reti
+
+000002c0 <_exit>:
+ 2c0:	f8 94       	cli
+
+000002c2 <__stop_program>:
+ 2c2:	ff cf       	rjmp	.-2      	; 0x2c2 <__stop_program>
